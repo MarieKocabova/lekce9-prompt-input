@@ -16,10 +16,6 @@ document.querySelector('.secti').addEventListener('click', () => {
     let a = parseFloat(prvni.value);
     let b = parseFloat(druhe.value);
 
-    if(isNaN(a) || isNaN(b)) {
-        return;
-    } 
-
     let c = a + b;
     vypisVysledek(c);
 })
@@ -27,10 +23,6 @@ document.querySelector('.secti').addEventListener('click', () => {
 document.querySelector('.odecti').addEventListener('click', () => {
     let a = parseFloat(prvni.value);
     let b = parseFloat(druhe.value);
-
-    if(isNaN(a) || isNaN(b)) {
-        return;
-    } 
 
     let c = a - b;
     vypisVysledek(c);
@@ -40,10 +32,6 @@ document.querySelector('.vynasob').addEventListener('click', () => {
     let a = parseFloat(prvni.value);
     let b = parseFloat(druhe.value);
 
-    if(isNaN(a) || isNaN(b)) {
-        return;
-    } 
-
     let c = a * b;
     vypisVysledek(c);
 })
@@ -51,10 +39,6 @@ document.querySelector('.vynasob').addEventListener('click', () => {
 document.querySelector('.vydel').addEventListener('click', () => {
     let a = parseFloat(prvni.value);
     let b = parseFloat(druhe.value);
-
-    if(isNaN(a) || isNaN(b)) {
-        return;
-    } 
 
     let c = a / b;
     vypisVysledek(c);
@@ -69,3 +53,28 @@ document.querySelector('.vydel').addEventListener('click', () => {
     - Rodné číslo je desetimístné číslo, které je dělitelné jedenácti beze zbytku; první dvojčíslí vyjadřuje poslední dvě číslice roku narození, druhé dvojčíslí vyjadřuje měsíc narození, u žen zvýšené o 50, třetí dvojčíslí vyjadřuje den narození; čtyřmístná koncovka je rozlišujícím znakem fyzických osob narozených v tomtéž kalendářním dnu.
     - Rodná čísla přidělená fyzickým osobám narozeným před 1. 1. 1954 mají stejnou strukturu, jsou však devítimístná s třímístnou koncovkou a nesplňují podmínku dělitelnosti jedenácti. */
 
+let elementRC = document.querySelector('input[name=rodne-cislo]');
+let vysledekValidace = document.querySelector('#validace > span');
+
+function vypisValidaci() {
+    let rcString = elementRC.value;
+    let rcBezLomitka = rcString.replace("/", "");
+    let rc = parseInt(rcBezLomitka);
+    let rcPrvniDveCisla = parseInt(rcBezLomitka.slice(0,2));
+    let rcDen = parseInt(rcBezLomitka.slice(4,6));
+    let rcMes = parseInt(rcBezLomitka.slice(2,3));
+   
+    if (isNaN(rc)) {
+        vysledekValidace.innerHTML = "Chyba - zadejte, prosím, rodné číslo"
+    } else if (rcBezLomitka.length < 9) {
+        vysledekValidace.innerHTML = "Rodné číslo je moc krátké";
+    } else if (rcBezLomitka.length == 9 && rcPrvniDveCisla < 54) {
+        vysledekValidace.innerHTML = "Rodné číslo nemohu ověřit, jedná o osobu narozenou před 1.1.1954";
+    } else if (rcBezLomitka.length == 10 && rc % 11 == 0 && rcDen < 32 && (rcMes == 0 || rcMes == 1 || rcMes == 5 || rcMes == 6 )) {
+        vysledekValidace.innerHTML = "Rodné číslo je v pořádku ověřeno."
+    } else {
+        vysledekValidace.innerHTML = "Chybné rodné číslo"
+    }
+}
+
+elementRC.addEventListener('change', vypisValidaci);
